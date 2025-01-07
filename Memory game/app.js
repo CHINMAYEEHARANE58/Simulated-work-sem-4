@@ -1,51 +1,51 @@
 const cardsArr = [
     {
-        name: '1',
-        img: 'images/1.jpeg'
+        name: 'fries',
+        img: 'images/fries.png'
     },
     {
-        name: '2',
-        img: 'images/2.jpeg'
+        name: 'cheeseburger',
+        img: 'images/cheeseburger.png'
     },
     {
-        name: '3',
-        img: 'images/3.jpeg'
+        name: 'hotdog',
+        img: 'images/hotdog.png'
     },
     {
-        name: '4',
-        img: 'images/4.jpeg'
+        name: 'ice-cream',
+        img: 'images/ice-cream.png'
     },
     {
-        name: '5',
-        img: 'images/5.jpeg'
+        name: 'milkshake',
+        img: 'images/milkshake.png'
     },
     {
-        name: '6',
-        img: 'images/6.jpeg'
+        name: 'pizza',
+        img: 'images/pizza.png'
     },
     {
-        name: '1',
-        img: 'images/1.jpeg'
+        name: 'fries',
+        img: 'images/fries.png'
     },
     {
-        name: '2',
-        img: 'images/2.jpeg'
+        name: 'cheeseburger',
+        img: 'images/cheeseburger.png'
     },
     {
-        name: '3',
-        img: 'images/3.jpeg'
+        name: 'hotdog',
+        img: 'images/hotdog.png'
     },
     {
-        name: '4',
-        img: 'images/4.jpeg'
+        name: 'ice-cream',
+        img: 'images/ice-cream.png'
     },
     {
-        name: '5',
-        img: 'images/5.jpeg'
+        name: 'milkshake',
+        img: 'images/milkshake.png'
     },
     {
-        name: '6',
-        img: 'images/6.jpeg'
+        name: 'pizza',
+        img: 'images/pizza.png'
     }
 ]
 
@@ -56,7 +56,7 @@ const grid = document.querySelector('#grid')
 function creatBoard () {
     for(let i=0; i<cardsArr.length; i++){
         const card = document.createElement('img')
-        card.setAttribute('src', 'images/1.jpeg')
+        card.setAttribute('src', 'images/blank.png')
         card.setAttribute('data-id', i)
         grid.appendChild(card)
     }
