@@ -48,11 +48,19 @@ h2 {
 }
 
 .mole {
-    background-image: url('./images/mole.jpg');
-    background-size: cover;
-    background-position: center;
-    border: 2px solid #151515;
-    transition: background-color 0.2s ease;
+  background-image: url('./images/mole.png');
+  background-size: cover;
+  background-position: center;
+  border: 2px solid #151515;
+  transition: background-color 0.2s ease;
+}
+
+.bonus-mole {
+  background-image: url('./images/bonus-mole.jpg');
+  background-size: cover;
+  background-position: center;
+  border: 2px solid #ffd700;
+  transition: background-color 0.2s ease;
 }
 
 #score,

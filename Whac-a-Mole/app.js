@@ -1,39 +1,62 @@
 const squares = document.querySelectorAll(".square");
-const mole = document.querySelector(".mole");
 const timeLeft = document.querySelector("#time-left");
-const score = document.querySelector("#score");
+const scoreDisplay = document.querySelector("#score");
+
 let result = 0;
 let hitPosition;
 let currentTime = 60;
 let timerId = null;
+let moleSpeed = 1000; 
+
 function randomSquare() {
   squares.forEach((square) => {
     square.classList.remove("mole");
+    square.classList.remove("bonus-mole");
   });
-  let randomSquare = squares[Math.floor(Math.random() * 9)];
-  randomSquare.classList.add("mole");
+
+  const randomSquare = squares[Math.floor(Math.random() * squares.length)];
+  const isBonus = Math.random() < 0.2;
+
+  if (isBonus) {
+    randomSquare.classList.add("bonus-mole");
+  } else {
+    randomSquare.classList.add("mole");
+  }
   hitPosition = randomSquare.id;
 }
+
 squares.forEach((square) => {
   square.addEventListener("mousedown", () => {
-    if (square.id == hitPosition) {
-      result++;
-      score.textContent = result;
+    if (square.id === hitPosition) {
+      const isBonus = square.classList.contains("bonus-mole");
+      result += isBonus ? 5 : 1; 
+      scoreDisplay.textContent = result;
       hitPosition = null;
+
+      if (result % 10 === 0 && moleSpeed > 300) {
+        clearInterval(timerId);
+        moleSpeed -= 100; 
+        moveMole();
+      }
     }
   });
 });
+
 function moveMole() {
-  timerId = setInterval(randomSquare, 500);
+  timerId = setInterval(randomSquare, moleSpeed);
 }
-moveMole();
+
 function countDown() {
   currentTime--;
   timeLeft.textContent = currentTime;
-  if (currentTime == 0) {
-    clearInterval(countDownTimerId);
+
+  if (currentTime === 0) {
     clearInterval(timerId);
+    clearInterval(countDownTimerId);
     alert("GAME OVER! Your final score is " + result);
   }
 }
-let countDownTimerId = setInterval(countDown, 2000);
+
+let countDownTimerId = setInterval(countDown, 1000);
+
+moveMole();
