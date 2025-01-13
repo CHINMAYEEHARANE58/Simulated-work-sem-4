@@ -1,57 +1,69 @@
-const computerChoiceDisplay = document.getElementById('comp')
-const userChoiceDisplay = document.getElementById('user')
-const resultDisplay = document.getElementById('result')
-const choices = document.querySelectorAll('button')
-let userChoice
-let computerChoice
-let result
+const computerChoiceDisplay = document.getElementById('comp');
+const userChoiceDisplay = document.getElementById('user');
+const resultDisplay = document.getElementById('result');
+const winsDisplay = document.getElementById('wins');
+const lossesDisplay = document.getElementById('losses');
+const tiesDisplay = document.getElementById('ties');
+const choices = document.querySelectorAll('.choice');
 
-choices.forEach(choice => choice.addEventListener('click', (e) => {
-    userChoice = e.target.id
-    userChoiceDisplay.innerHTML = userChoice
-    generateCompChoice()
-    getResult()
-}))
+let userChoice, computerChoice, result;
+let wins = 0, losses = 0, ties = 0;
 
-function generateCompChoice(){
-    const randomNumber = Math.floor(Math.random() * 3)
-    console.log(randomNumber)
+const sounds = {
+    click: new Audio('./sounds/select.wav'), 
+    win: new Audio('./sounds/win.wav'),
+    lose: new Audio('./sounds/lose.wav'),
+    draw: new Audio('./sounds/draw.wav')
+};
 
-    if(randomNumber === 0){
-        computerChoice = 'Rock'
-    }
-    else if(randomNumber === 1){
-        computerChoice = 'Paper'
-    }
-    else if(randomNumber === 2){
-        computerChoice = 'Scissors'
-    }
+choices.forEach(choice => 
+    choice.addEventListener('click', (e) => {
+        sounds.click.play();
+        userChoice = e.target.id;
+        userChoiceDisplay.innerHTML = userChoice;
+        generateCompChoice();
+        getResult();
+    })
+);
 
-    computerChoiceDisplay.innerHTML = computerChoice
+function generateCompChoice() {
+    const randomNumber = Math.floor(Math.random() * 3);
+    computerChoice = ['Rock', 'Paper', 'Scissors'][randomNumber];
+    computerChoiceDisplay.innerHTML = computerChoice;
 }
 
-function getResult(){
-    if(computerChoice === userChoice){
-        result = "It's a draw!"
+function getResult() {
+    if (computerChoice === userChoice) {
+        result = "It's a draw!";
+        ties++;
+        sounds.draw.play();
+    } else if (
+        (computerChoice === 'Rock' && userChoice === 'Paper') ||
+        (computerChoice === 'Paper' && userChoice === 'Scissors') ||
+        (computerChoice === 'Scissors' && userChoice === 'Rock')
+    ) {
+        result = "You win!";
+        wins++;
+        sounds.win.play();
+    } else {
+        result = "You lost!";
+        losses++;
+        sounds.lose.play();
     }
-    if(computerChoice === 'Rock' && userChoice === 'Paper'){
-        result = "You win!"
-    }
-    if(computerChoice === 'Rock' && userChoice === 'Scissors'){
-        result = "You lost!"
-    }
-    if(computerChoice === 'Paper' && userChoice === 'Scissors'){
-        result = "You win!"
-    }
-    if(computerChoice === 'Paper' && userChoice === 'Rock'){
-        result = "You lost!"
-    }
-    if(computerChoice === 'Scissors' && userChoice === 'Rock'){
-        result = "You win!"
-    }
-    if(computerChoice === 'Scissors' && userChoice === 'Paper'){
-        result = "You lost!"
-    }
+    updateResults();
+}
 
-    resultDisplay.innerHTML = result
+function updateResults() {
+    resultDisplay.innerHTML = result;
+    
+    if (result === "You win!") {
+        resultDisplay.style.color = "green";
+    } else if (result === "You lost!") {
+        resultDisplay.style.color = "red";
+    } else if (result === "It's a draw!") {
+        resultDisplay.style.color = "blue";
+    }
+    winsDisplay.innerHTML = wins;
+    lossesDisplay.innerHTML = losses;
+    tiesDisplay.innerHTML = ties;
 }
