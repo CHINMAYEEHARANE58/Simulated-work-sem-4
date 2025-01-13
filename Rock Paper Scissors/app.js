@@ -61,7 +61,7 @@ function updateResults() {
     } else if (result === "You lost!") {
         resultDisplay.style.color = "red";
     } else if (result === "It's a draw!") {
-        resultDisplay.style.color = "blue";
+        resultDisplay.style.color = "orange";
     }
     winsDisplay.innerHTML = wins;
     lossesDisplay.innerHTML = losses;
