@@ -1,109 +1,108 @@
-const cardsArr = [
-    {
-        name: 'fries',
-        img: 'images/fries.png'
-    },
-    {
-        name: 'cheeseburger',
-        img: 'images/cheeseburger.png'
-    },
-    {
-        name: 'hotdog',
-        img: 'images/hotdog.png'
-    },
-    {
-        name: 'ice-cream',
-        img: 'images/ice-cream.png'
-    },
-    {
-        name: 'milkshake',
-        img: 'images/milkshake.png'
-    },
-    {
-        name: 'pizza',
-        img: 'images/pizza.png'
-    },
-    {
-        name: 'fries',
-        img: 'images/fries.png'
-    },
-    {
-        name: 'cheeseburger',
-        img: 'images/cheeseburger.png'
-    },
-    {
-        name: 'hotdog',
-        img: 'images/hotdog.png'
-    },
-    {
-        name: 'ice-cream',
-        img: 'images/ice-cream.png'
-    },
-    {
-        name: 'milkshake',
-        img: 'images/milkshake.png'
-    },
-    {
-        name: 'pizza',
-        img: 'images/pizza.png'
-    }
-]
+const grid = document.querySelector('#grid');
+const timerDisplay = document.getElementById('timer');
+const scoreDisplay = document.getElementById('score');
 
-cardsArr.sort(() => 0.5 - Math.random())
+const flipSound = new Audio('sounds/select.wav'); 
+const winSound = new Audio('sounds/win.wav');
 
-const grid = document.querySelector('#grid')
-const result = document.querySelector("#result")
-let cardsChosen = []
-let cardsChosenId = []
-const cardsWon = []
-function createBoard () {
-    for(let i=0; i<cardsArr.length; i++){
-        const card = document.createElement('img')
-        card.setAttribute('src', 'images/blank.png')
-        card.setAttribute('data-id', i)
-        card.addEventListener('click', flipCard)
-        grid.appendChild(card)
+const cardArray = [
+    { name: 'fries', img: 'images/fries.png' },
+    { name: 'cheeseburger', img: 'images/cheeseburger.png' },
+    { name: 'hotdog', img: 'images/hotdog.png' },
+    { name: 'ice-cream', img: 'images/ice-cream.png' },
+    { name: 'milkshake', img: 'images/milkshake.png' },
+    { name: 'pizza', img: 'images/pizza.png' },
+    { name: 'fries', img: 'images/fries.png' },
+    { name: 'cheeseburger', img: 'images/cheeseburger.png' },
+    { name: 'hotdog', img: 'images/hotdog.png' },
+    { name: 'ice-cream', img: 'images/ice-cream.png' },
+    { name: 'milkshake', img: 'images/milkshake.png' },
+    { name: 'pizza', img: 'images/pizza.png' },
+];
+
+cardArray.sort(() => 0.5 - Math.random());
+
+let cardsChosen = [];
+let cardsChosenIds = [];
+let cardsWon = [];
+let timer = 0;
+let timerInterval;
+
+function createBoard() {
+    cardArray.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.setAttribute('data-id', index);
+
+        const cardInner = document.createElement('div');
+        cardInner.classList.add('card-inner');
+
+        const frontFace = document.createElement('div');
+        frontFace.classList.add('card-front');
+
+        const backFace = document.createElement('div');
+        backFace.classList.add('card-back');
+        backFace.style.backgroundImage = `url(${item.img})`;
+
+        cardInner.appendChild(frontFace);
+        cardInner.appendChild(backFace);
+        card.appendChild(cardInner);
+
+        card.addEventListener('click', flipCard);
+        grid.appendChild(card);
+    });
+}
+
+function flipCard() {
+    const cardId = this.getAttribute('data-id');
+    if (!cardsChosenIds.includes(cardId) && cardsChosen.length < 2) {
+        this.classList.add('flipped');
+        cardsChosen.push(cardArray[cardId].name);
+        cardsChosenIds.push(cardId);
+        flipSound.play();
+
+        if (cardsChosen.length === 2) {
+            setTimeout(checkMatch, 1000);
+        }
     }
 }
 
 function checkMatch() {
-    const cards = document.querySelectorAll('img')
-    const optionOneId = cardsChosenId[0]
-    const optionTwoId = cardsChosenId[1]
-    
-    if(optionOneId == optionTwoId) {
-        cards[optionOneId].setAttribute('src', 'images/blank.png')
-        cards[optionTwoId].setAttribute('src', 'images/blank.png')
-        alert('You have clicked the same image!')
-    }
-    else if (cardsChosen[0] === cardsChosen[1]) {
-      alert('You found a match')
-      cards[optionOneId].setAttribute('src', 'images/white.png')
-      cards[optionTwoId].setAttribute('src', 'images/white.png')
-      cards[optionOneId].removeEventListener('click', flipCard)
-      cards[optionTwoId].removeEventListener('click', flipCard)
-      cardsWon.push(cardsChosen)
+    const cards = document.querySelectorAll('.card');
+    const [id1, id2] = cardsChosenIds;
+
+    if (cardsChosen[0] === cardsChosen[1] && id1 !== id2) {
+        cardsWon.push(cardsChosen);
+        cards[id1].removeEventListener('click', flipCard);
+        cards[id2].removeEventListener('click', flipCard);
     } else {
-        cards[optionOneId].setAttribute('src', 'images/blank.png')
-        cards[optionTwoId].setAttribute('src', 'images/blank.png')
-        alert('Sorry, try again')
+        cards[id1].classList.remove('flipped');
+        cards[id2].classList.remove('flipped');
     }
-    cardsChosen = []
-    cardsChosenId = []
-    result.textContent = cardsWon.length
-    if  (cardsWon.length === cardsArr.length/2) {
-        result.textContent = 'Congratulations! You found them all!'
+
+    cardsChosen = [];
+    cardsChosenIds = [];
+    scoreDisplay.textContent = cardsWon.length;
+    
+
+    if (cardsWon.length === cardArray.length / 2) {
+        clearInterval(timerInterval);
+        alert(`Congratulations! You completed the game in ${timer}s!`);
+        winSound.play();
     }
 }
 
-function flipCard() {
-    let cardId = this.getAttribute('data-id')
-    cardsChosen.push(cardsArr[cardId].name)
-    cardsChosenId.push(cardId)
-    this.setAttribute('src', cardsArr[cardId].img)
-    if (cardsChosen.length ===2) {
-        setTimeout(checkMatch, 500)
-    }
+function startTimer() {
+    timer = 0;
+    timerInterval = setInterval(() => {
+        timer++;
+        timerDisplay.textContent = `Time: ${timer}s`;
+    }, 1000);
 }
 
-createBoard()
+function initializeGame() {
+    createBoard();
+    startTimer();
+}
+
+initializeGame();
